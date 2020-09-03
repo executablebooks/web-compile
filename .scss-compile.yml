@@ -1,0 +1,7 @@
+EXCLUDES: []
+LIBRARY_PATHS: []
+OUTPUT_STYLES: compressed
+SOURCES_PATH: tests/example_sass
+SOURCE_COMMENTS: false
+SOURCE_MAP: true
+TARGET_PATH: tests/example_css
