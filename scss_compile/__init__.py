@@ -4,6 +4,7 @@ import json
 import hashlib
 import os
 from pathlib import Path
+from subprocess import check_call
 import sys
 from typing import Set
 
@@ -237,18 +238,14 @@ def run_compile(
         else:
             css_out_path = out_dir / (out_name + ".css")
         if not test_run:
-            if css_out_path.exists():
-                if css_str != css_out_path.read_text(encoding=encoding):
-                    changed_files = True
-            else:
+
+            if update_file(css_out_path, css_str, encoding):
                 changed_files = True
-            css_out_path.write_text(css_str, encoding=encoding)
-            if sourcemap:
-                if not (out_dir / (scss_path.name + ".map.json")).exists():
-                    changed_files = True
-                (out_dir / (scss_path.name + ".map.json")).write_text(
-                    sourcemap_str, encoding=encoding
-                )
+            if sourcemap and update_file(
+                out_dir / (scss_path.name + ".map.json"), sourcemap_str, encoding
+            ):
+                changed_files = True
+
         if not quiet:
             click.echo(f"Compiled: {str(scss_path)} -> {str(css_out_path)}")
 
@@ -262,5 +259,21 @@ def run_compile(
 
     if changed_files:
         if not quiet:
-            click.secho("File changed", fg="yellow")
+            click.secho("File(s) changed", fg="yellow")
         sys.exit(exit_code)
+
+
+def update_file(path, text, encoding) -> bool:
+
+    if not path.exists():
+        path.write_text(text, encoding=encoding)
+        # this is required, to ensure creations are picked up by pre-commit
+        # TODO ignore for non-git repositories?
+        check_call(["git", "add", "--intent-to-add", str(path)])
+        return True
+
+    if text != path.read_text(encoding=encoding):
+        path.write_text(text, encoding=encoding)
+        return True
+
+    return False
