@@ -100,6 +100,13 @@ def config_provider(file_path, cmd_name):
     show_default=True,
     help="Exit code when files changed.",
 )
+@click.option(
+    "--git-add/--no-git-add",
+    default=True,
+    is_flag=True,
+    show_default=True,
+    help="Attempt to add new files to the git index (required by pre-commit).",
+)
 @click.option("--test-run", is_flag=True, help="Do not delete/create any files.")
 @click_config_file.configuration_option(
     provider=config_provider,
@@ -123,6 +130,7 @@ def run_compile(
     quiet,
     verbose,
     exit_code,
+    git_add,
     test_run,
 ):
     """Compile all SCSS files in the paths provided.
@@ -239,15 +247,23 @@ def run_compile(
             css_out_path = out_dir / (out_name + ".css")
         if not test_run:
 
-            if update_file(css_out_path, css_str, encoding):
+            if update_file(css_out_path, css_str, encoding, git_add):
                 changed_files = True
             if sourcemap and update_file(
-                out_dir / (scss_path.name + ".map.json"), sourcemap_str, encoding
+                out_dir / (scss_path.name + ".map.json"),
+                sourcemap_str,
+                encoding,
+                git_add,
             ):
                 changed_files = True
 
         if not quiet:
-            click.echo(f"Compiled: {str(scss_path)} -> {str(css_out_path)}")
+            if changed_files:
+                click.secho(
+                    f"Compiled: {str(scss_path)} -> {str(css_out_path)}", fg="blue"
+                )
+            elif verbose:
+                click.echo(f"Already Exists: {str(scss_path)} -> {str(css_out_path)}")
 
     if compilation_errors:
         raise click.ClickException(
@@ -263,13 +279,13 @@ def run_compile(
         sys.exit(exit_code)
 
 
-def update_file(path, text, encoding) -> bool:
+def update_file(path, text, encoding, git_add) -> bool:
 
     if not path.exists():
         path.write_text(text, encoding=encoding)
-        # this is required, to ensure creations are picked up by pre-commit
-        # TODO ignore for non-git repositories?
-        check_call(["git", "add", "--intent-to-add", str(path)])
+        if git_add:
+            # this is required, to ensure creations are picked up by pre-commit
+            check_call(["git", "add", str(path)])
         return True
 
     if text != path.read_text(encoding=encoding):

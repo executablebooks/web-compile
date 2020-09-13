@@ -21,19 +21,24 @@ def test_help():
 
 
 def test_file(scss_folder):
-    result = CliRunner().invoke(run_compile, [str(scss_folder / "example1.scss")])
+    result = CliRunner().invoke(
+        run_compile, ["--no-git-add", str(scss_folder / "example1.scss")]
+    )
     assert result.exit_code == 2, result.output
     assert (scss_folder / "example1.css").exists(), result.output
 
     # should not change any files
-    result = CliRunner().invoke(run_compile, [str(scss_folder / "example1.scss")])
+    result = CliRunner().invoke(
+        run_compile, ["--no-git-add", str(scss_folder / "example1.scss")]
+    )
     assert result.exit_code == 0, result.output
     assert (scss_folder / "example1.css").exists(), result.output
 
 
 def test_file_hash(scss_folder):
     result = CliRunner().invoke(
-        run_compile, [str(scss_folder / "example1.scss"), "--hash-filenames"]
+        run_compile,
+        ["--no-git-add", str(scss_folder / "example1.scss"), "--hash-filenames"],
     )
     assert result.exit_code == 2, result.output
     assert len(list(scss_folder.glob("example1#*.css"))) == 1, result.output
@@ -41,7 +46,8 @@ def test_file_hash(scss_folder):
 
     # should create same hash
     result = CliRunner().invoke(
-        run_compile, [str(scss_folder / "example1.scss"), "--hash-filenames"]
+        run_compile,
+        ["--no-git-add", str(scss_folder / "example1.scss"), "--hash-filenames"],
     )
     assert result.exit_code == 0, result.output
     assert len(list(scss_folder.glob("example1#*.css"))) == 1, result.output
@@ -50,7 +56,7 @@ def test_file_hash(scss_folder):
 
 def test_file_sourcemap(scss_folder):
     result = CliRunner().invoke(
-        run_compile, [str(scss_folder / "example1.scss"), "--sourcemap"]
+        run_compile, ["--no-git-add", str(scss_folder / "example1.scss"), "--sourcemap"]
     )
     assert result.exit_code == 2, result.output
     assert (scss_folder / "example1.css").exists(), result.output
@@ -59,21 +65,25 @@ def test_file_sourcemap(scss_folder):
 
 def test_partials(scss_folder):
     result = CliRunner().invoke(
-        run_compile, [str(scss_folder / "partials" / "_example1.scss")]
+        run_compile, ["--no-git-add", str(scss_folder / "partials" / "_example1.scss")]
     )
     assert result.exit_code == 0, result.output
     assert not (scss_folder / "example1.css").exists(), result.output
 
     result = CliRunner().invoke(
         run_compile,
-        [str(scss_folder / "partials" / "_example1.scss"), "--partial-depth=1"],
+        [
+            "--no-git-add",
+            str(scss_folder / "partials" / "_example1.scss"),
+            "--partial-depth=1",
+        ],
     )
     assert result.exit_code == 2, result.output
     assert (scss_folder / "example1.css").exists(), result.output
 
 
 def test_folder(scss_folder):
-    result = CliRunner().invoke(run_compile, [str(scss_folder)])
+    result = CliRunner().invoke(run_compile, ["--no-git-add", str(scss_folder)])
     assert result.exit_code == 2, result.output
     assert (scss_folder / "example1.css").exists(), result.output
     assert (scss_folder / "example2.css").exists(), result.output
@@ -83,6 +93,7 @@ def test_translate(scss_folder):
     result = CliRunner().invoke(
         run_compile,
         [
+            "--no-git-add",
             str(scss_folder / "example1.scss"),
             "--translate",
             str(scss_folder) + ":" + str(scss_folder.parent / "css"),
