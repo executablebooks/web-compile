@@ -223,6 +223,10 @@ def run_compile(
                 )
             continue
 
+        # fix to agree with end-of-file-fixer
+        css_str = css_str.rstrip() + "\n"
+        sourcemap_str = sourcemap_str.rstrip() + "\n"
+
         if not test_run:
             out_dir.mkdir(exist_ok=True, parents=True)
 
