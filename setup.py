@@ -12,7 +12,7 @@ readme_text = Path("./README.md").read_text()
 
 setup(
     name="scss-compile",
-    version="version",
+    version=version,
     description=(
         "A CLI for compiling SCSS files to CSS, and associated pre-commit hook."
     ),

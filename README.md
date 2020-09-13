@@ -1,4 +1,4 @@
-# scss-compile [IN-DEVELOPMENT]
+# scss-compile
 
 A CLI for compiling SCSS files to CSS, and associated pre-commit hook.
 
@@ -6,9 +6,13 @@ This CLI is a small wrapper around [libsass-python](https://github.com/sass/libs
 which also aims to be compatible with [pre-commit](https://pre-commit.com/),
 and provide a pre-commit hook.
 
+**NOTE**: The package in on alpha release, but looks to be working as intended,
+and will be trialled in [sphinx-panels](https://github.com/executablebooks/sphinx-panels),
+and then [sphinx-book-theme](https://github.com/executablebooks/sphinx-book-theme).
+
 ## Installation
 
-To use directly as CLI:
+To use directly as a CLI:
 
 ```console
 pip install scss-compile
