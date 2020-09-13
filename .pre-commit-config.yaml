@@ -20,3 +20,9 @@ repos:
   rev: 3.8.3
   hooks:
   - id: flake8
+
+- repo: https://github.com/executablebooks/scss-compile
+  rev: 33fa54c5b7f4b3c929b04395548b16e5ffbdd390
+  hooks:
+    - id: scss-compile
+      args: [--config=scss-compile-config.yml]

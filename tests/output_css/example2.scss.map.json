@@ -1,0 +1,10 @@
+{
+	"version": 3,
+	"file": "example2.css",
+	"sourceRoot": "../example_scss",
+	"sources": [
+		"example2.scss"
+	],
+	"names": [],
+	"mappings": "AAAA,AAAA,GAAG,AAAC,CACA,KAAK,CAAE,IAAI,CACd"
+}
