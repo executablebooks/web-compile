@@ -4,6 +4,7 @@ import json
 import hashlib
 import os
 from pathlib import Path
+import sys
 from typing import Set
 
 import click
@@ -91,6 +92,13 @@ def config_provider(file_path, cmd_name):
 )
 @click.option("-q", "--quiet", is_flag=True, help="Remove stdout logging.")
 @click.option("-v", "--verbose", is_flag=True, help="Increase stdout logging.")
+@click.option(
+    "--exit-code",
+    default=2,
+    type=int,
+    show_default=True,
+    help="Exit code when files changed.",
+)
 @click.option("--test-run", is_flag=True, help="Do not delete/create any files.")
 @click_config_file.configuration_option(
     provider=config_provider,
@@ -113,6 +121,7 @@ def run_compile(
     precision,
     quiet,
     verbose,
+    exit_code,
     test_run,
 ):
     """Compile all SCSS files in the paths provided.
@@ -177,6 +186,7 @@ def run_compile(
             parent_dir = parent_dir.parent
 
     compilation_errors = {}
+    changed_files = False
     for scss_path in scss_paths:
 
         out_dir = scss_path.parent
@@ -209,23 +219,33 @@ def run_compile(
 
         out_name, _ = os.path.splitext(scss_path.name)
         if hash_filenames:
-            # remove old hashes
-            for path in out_dir.glob(out_name + "#*.css"):
-                if verbose:
-                    click.secho(f"Removed: {str(path)}", fg="yellow")
-                if not test_run:
-                    path.unlink()
             css_out_path = out_dir / (
                 out_name
                 + "#"
                 + hashlib.md5(css_str.encode(encoding)).hexdigest()
                 + ".css"
             )
+            # remove old hashes
+            for path in out_dir.glob(out_name + "#*.css"):
+                if path == css_out_path:
+                    continue
+                if verbose:
+                    click.secho(f"Removed: {str(path)}", fg="yellow")
+                if not test_run:
+                    changed_files = True
+                    path.unlink()
         else:
             css_out_path = out_dir / (out_name + ".css")
         if not test_run:
+            if css_out_path.exists():
+                if css_str != css_out_path.read_text(encoding=encoding):
+                    changed_files = True
+            else:
+                changed_files = True
             css_out_path.write_text(css_str, encoding=encoding)
             if sourcemap:
+                if not (out_dir / (scss_path.name + ".map.json")).exists():
+                    changed_files = True
                 (out_dir / (scss_path.name + ".map.json")).write_text(
                     sourcemap_str, encoding=encoding
                 )
@@ -239,3 +259,8 @@ def run_compile(
 
     if not quiet:
         click.secho("Compilation succeeded!", fg="green")
+
+    if changed_files:
+        if not quiet:
+            click.secho("File changed", fg="yellow")
+        sys.exit(exit_code)

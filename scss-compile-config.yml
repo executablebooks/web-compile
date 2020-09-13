@@ -4,4 +4,4 @@ scss-compile:
   hash_filenames: true
   output_format: compressed
   partial_depth: 1
-  translate: [tests/example_scss:tests/output_css]
+  translate: ["tests/example_scss:tests/output_css"]

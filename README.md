@@ -65,6 +65,7 @@ Options:
   -p, --precision INTEGER         precision for numbers.  [default: 5]
   -q, --quiet                     Remove stdout logging.
   -v, --verbose                   Increase stdout logging.
+  --exit-code INTEGER             Exit code when files changed.  [default: 2]
   --test-run                      Do not delete/create any files.
   --config FILE                   Read default configuration from a file
                                   (allowed extensions: .json, .toml, .yml,
@@ -111,7 +112,7 @@ scss-compile:
   hash_filenames: true
   output_format: compressed
   partial_depth: 1
-  translate: [tests/example_sass:tests/output_css]
+  translate: ["tests/example_sass:tests/output_css"]
 ```
 
 ## Usage
