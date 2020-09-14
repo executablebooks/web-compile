@@ -22,7 +22,7 @@ repos:
   - id: flake8
 
 - repo: https://github.com/executablebooks/scss-compile
-  rev: v0.1.0
+  rev: v0.1.1
   hooks:
     - id: scss-compile
       args: [--config=scss-compile-config.yml]
