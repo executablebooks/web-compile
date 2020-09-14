@@ -168,6 +168,7 @@ def run_compile(
                     "sourcemap": sourcemap,
                     "precision": precision,
                     "git": git_repo.git_dir if git_repo else None,
+                    "exit_code": exit_code,
                 }
             }
         )
@@ -262,13 +263,14 @@ def run_compile(
             css_out_path = out_dir / (out_name + ".css")
         if not test_run:
 
-            if update_file(css_out_path, css_str, encoding, git_repo):
+            if update_file(css_out_path, css_str, encoding, git_repo, verbose):
                 changed_files = True
             if sourcemap and update_file(
                 out_dir / (scss_path.name + ".map.json"),
                 sourcemap_str,
                 encoding,
                 git_repo,
+                verbose,
             ):
                 changed_files = True
 
@@ -294,13 +296,17 @@ def run_compile(
         sys.exit(exit_code)
 
 
-def update_file(path: Path, text: str, encoding: str, git_repo: Optional[Repo]) -> bool:
+def update_file(
+    path: Path, text: str, encoding: str, git_repo: Optional[Repo], verbose: bool
+) -> bool:
 
     if not path.exists():
         path.write_text(text, encoding=encoding)
         if git_repo is not None:
             # this is required, to ensure file creations are picked up by pre-commit
             git_repo.index.add([str(path)], write=True)
+            if verbose:
+                click.echo(f"Added to git index: {str(path)}")
         return True
 
     if text != path.read_text(encoding=encoding):

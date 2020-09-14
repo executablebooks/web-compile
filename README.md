@@ -200,13 +200,13 @@ To run the tests:
 
 ```console
 pip install tox
-tox
+tox -e py37
 ```
 
 To test out the CLI:
 
 ```console
-tox -e py37-cli -- --help
+tox -e py37-cli
 ```
 
 For code style:
