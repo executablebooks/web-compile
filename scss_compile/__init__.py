@@ -146,7 +146,7 @@ def run_compile(
         )
     except IndexError:
         raise click.ClickException(f"Malformed translate option: '{translate}'")
-    if not quiet:
+    if verbose:
         config_str = yaml.dump(
             {
                 "Compile configuration": {
