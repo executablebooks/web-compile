@@ -70,6 +70,7 @@ Options:
   -q, --quiet                     Remove stdout logging.
   -v, --verbose                   Increase stdout logging.
   --exit-code INTEGER             Exit code when files changed.  [default: 2]
+  --no-git                        Do not add new files to a git index.
   --test-run                      Do not delete/create any files.
   --config FILE                   Read default configuration from a file
                                   (allowed extensions: .json, .toml, .yml,
