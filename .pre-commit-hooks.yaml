@@ -3,4 +3,6 @@
     description: This hook compiles SCSS to CSS.
     entry: scss-compile
     language: python
+    language_version: python3
+    require_serial: true
     types: [scss]
