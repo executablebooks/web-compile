@@ -28,6 +28,7 @@ setup(
         "click~=7.1.2",
         "click-config-file~=0.6.0",
         "libsass~=0.20.1",
+        "gitpython~=3.1.8",
         "pyyaml",
         "toml",
     ],

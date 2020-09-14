@@ -4,18 +4,18 @@ import json
 import hashlib
 import os
 from pathlib import Path
-from subprocess import check_call
 import sys
-from typing import Set
+from typing import Optional, Set
 
 import click
 import click_config_file
+from git import Repo, InvalidGitRepositoryError
 import sass
 import toml
 import yaml
 
 
-def config_provider(file_path, cmd_name):
+def config_provider(file_path: str, cmd_name: str):
     """Read configuration file."""
     _, ext = os.path.splitext(file_path)
     text = Path(file_path).read_text()
@@ -101,11 +101,9 @@ def config_provider(file_path, cmd_name):
     help="Exit code when files changed.",
 )
 @click.option(
-    "--git-add/--no-git-add",
-    default=True,
+    "--no-git",
     is_flag=True,
-    show_default=True,
-    help="Attempt to add new files to the git index (required by pre-commit).",
+    help="Do not add new files to a git index.",
 )
 @click.option("--test-run", is_flag=True, help="Do not delete/create any files.")
 @click_config_file.configuration_option(
@@ -130,7 +128,7 @@ def run_compile(
     quiet,
     verbose,
     exit_code,
-    git_add,
+    no_git,
     test_run,
 ):
     """Compile all SCSS files in the paths provided.
@@ -138,6 +136,18 @@ def run_compile(
     For directories; include all non-partial SCSS files, and
     for files; if partial, include all adjacent, non-partial, SCSS files.
     """
+
+    if no_git:
+        git_repo = None
+    else:
+        try:
+            # TODO allow for the cwd to be in a child directory of the repo
+            git_repo = Repo(os.getcwd(), search_parent_directories=False)
+        except InvalidGitRepositoryError:
+            raise click.ClickException(
+                f"CWD is not the root of a git repository (use --no-git): {os.getcwd()}"
+            )
+
     try:
         translate = (
             {}
@@ -157,6 +167,8 @@ def run_compile(
                     "translate": translate,
                     "sourcemap": sourcemap,
                     "precision": precision,
+                    "git": git_repo.git_dir if git_repo else None,
+                    "exit_code": exit_code,
                 }
             }
         )
@@ -251,13 +263,14 @@ def run_compile(
             css_out_path = out_dir / (out_name + ".css")
         if not test_run:
 
-            if update_file(css_out_path, css_str, encoding, git_add):
+            if update_file(css_out_path, css_str, encoding, git_repo, verbose):
                 changed_files = True
             if sourcemap and update_file(
                 out_dir / (scss_path.name + ".map.json"),
                 sourcemap_str,
                 encoding,
-                git_add,
+                git_repo,
+                verbose,
             ):
                 changed_files = True
 
@@ -283,13 +296,17 @@ def run_compile(
         sys.exit(exit_code)
 
 
-def update_file(path, text, encoding, git_add) -> bool:
+def update_file(
+    path: Path, text: str, encoding: str, git_repo: Optional[Repo], verbose: bool
+) -> bool:
 
     if not path.exists():
         path.write_text(text, encoding=encoding)
-        if git_add:
-            # this is required, to ensure creations are picked up by pre-commit
-            check_call(["git", "add", str(path)])
+        if git_repo is not None:
+            # this is required, to ensure file creations are picked up by pre-commit
+            git_repo.index.add([str(path)], write=True)
+            if verbose:
+                click.echo(f"Added to git index: {str(path)}")
         return True
 
     if text != path.read_text(encoding=encoding):
