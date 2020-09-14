@@ -59,8 +59,11 @@ Options:
                                   [default: compressed]
   -m, --sourcemap                 Output source map.
   -h, --hash-filenames            Add the content hash to filenames:
-                                  <filename>#<hash>.css (old hashes will be
-                                  removed).
+                                  <filename><hash-prefix><hash>.css (old
+                                  hashes will be removed).
+
+  --hash-prefix TEXT              Prefix to use for hashed filenames.
+                                  [default: #]
 
   -t, --translate TEXT            Source to output path translations, e.g.
                                   'src/scss:dist/css' (can be used multiple

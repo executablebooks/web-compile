@@ -71,8 +71,14 @@ def config_provider(file_path: str, cmd_name: str):
     is_flag=True,
     help=(
         "Add the content hash to filenames: "
-        "<filename>#<hash>.css (old hashes will be removed)."
+        "<filename><hash-prefix><hash>.css (old hashes will be removed)."
     ),
+)
+@click.option(
+    "--hash-prefix",
+    default="#",
+    show_default=True,
+    help="Prefix to use for hashed filenames.",
 )
 @click.option(
     "-t",
@@ -129,6 +135,7 @@ def run_compile(
     verbose,
     exit_code,
     no_git,
+    hash_prefix,
     test_run,
 ):
     """Compile all SCSS files in the paths provided.
@@ -246,12 +253,12 @@ def run_compile(
         if hash_filenames:
             css_out_path = out_dir / (
                 out_name
-                + "#"
+                + hash_prefix
                 + hashlib.md5(css_str.encode(encoding)).hexdigest()
                 + ".css"
             )
             # remove old hashes
-            for path in out_dir.glob(out_name + "#*.css"):
+            for path in out_dir.glob(f"{out_name}{hash_prefix}*.css"):
                 if path == css_out_path:
                     continue
                 if verbose:
