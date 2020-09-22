@@ -356,6 +356,8 @@ def minify_js(
             )
         try:
             js_str = rjsmin.jsmin(input_path.read_text(), js_comments)
+            # ensure compatibility with end-of-file-fixer
+            js_str = js_str.rstrip() + os.linesep
         except Exception as err:
             compilation_errors[str(input_path)] = str(err)
             if continue_on_error:
@@ -438,6 +440,8 @@ def compile_jinja(
             jinja_str = jinja_env.from_string(
                 input_path.read_text(jinja_encoding)
             ).render()
+            # ensure compatibility with end-of-file-fixer
+            jinja_str = jinja_str.rstrip() + os.linesep
         except Exception as err:
             compilation_errors[str(input_path)] = str(err)
             if continue_on_error:
