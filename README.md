@@ -1,6 +1,8 @@
 # web-compile
 
-A CLI for compiling SCSS files to CSS, and associated pre-commit hook.
+[![PyPI][pypi-badge]][pypi-link]
+
+A CLI to compile/minify SCSS & JS, and associated pre-commit hook.
 
 This CLI is a small wrapper around [libsass-python](https://github.com/sass/libsass-python),
 [rJSmin](http://opensource.perlig.de/rjsmin/) and [jinja2](https://jinja.palletsprojects.com),
@@ -10,6 +12,9 @@ and provide a pre-commit hook.
 **NOTE**: The package in on alpha release, but looks to be working as intended,
 and will be trialled in [sphinx-panels](https://github.com/executablebooks/sphinx-panels),
 and then [sphinx-book-theme](https://github.com/executablebooks/sphinx-book-theme).
+
+[pypi-badge]: https://img.shields.io/pypi/v/web-compile.svg
+[pypi-link]: https://pypi.org/project/web-compile
 
 ## Installation
 
