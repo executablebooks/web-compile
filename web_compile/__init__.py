@@ -5,7 +5,6 @@ import jinja2
 import os
 from pathlib import Path
 import sys
-from typing import List
 
 import click
 from git import Repo, InvalidGitRepositoryError
@@ -110,7 +109,6 @@ EXIT_CODE = click.option(
 @QUIET
 @VERBOSE
 def run_compile(
-    files: List[str],
     config_path: Path,
     sass_files: dict,
     sass_format: str,

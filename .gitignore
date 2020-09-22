@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 
 .vscode/
+tests/example_dist/

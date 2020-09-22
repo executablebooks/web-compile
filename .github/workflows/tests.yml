@@ -44,10 +44,37 @@ jobs:
     - name: Run pytest
       run: pytest
 
+  pre-commit-hook:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install tox
+      run: |
+        python -m pip install --upgrade pip
+        pip install tox
+
+    - name: run initial
+      # the first run should populate the files with a non-zero exit code
+      continue-on-error: true
+      run: tox -e try-repo
+
+    - name: run secondary
+      # the second run should not change any files and exit cleanly
+      run: tox -e try-repo
+
   publish:
 
     name: Publish to PyPi
-    needs: [pre-commit, tests]
+    needs: [pre-commit, tests, pre-commit-hook]
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
     runs-on: ubuntu-latest
     steps:

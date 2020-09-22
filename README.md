@@ -33,13 +33,14 @@ Add to your `.pre-commit-config.yaml`
         args: [--config=config.yml]
         files: >-
             (?x)^(
+                web-compile-config.yml|
                 src/.*|
                 dist/.*
             )$
 ```
 
 By default, the hook will be initiated for all text file changes.
-But it is advisable to constrain this to the known input and output folders.
+But it is advisable to constrain this to the known configuration file, and input/output folders.
 
 ## Configuration
 
@@ -317,6 +318,12 @@ To test out the CLI:
 
 ```console
 tox -e py37-cli
+```
+
+To test the pre-commit hook:
+
+```console
+tox -e try-repo
 ```
 
 For code style:

@@ -18,8 +18,9 @@ web-compile:
       tests/example_src/example3.j2: tests/example_dist/example3.txt
     variables:
       a: b
-  exit_code: 2
-  verbose: false
+  exit_code: 3
+  verbose: true
   test_run: false
   continue_on_error: true
   quiet: false
+  git_add: false
