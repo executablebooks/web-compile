@@ -108,7 +108,7 @@ def test_js_hash(src_folder: Path):
     assert result.exit_code == 3, result.output
 
     assert (
-        src_folder / "dist" / "example1.36fb66cd32ac08ace70a7132f8173a9b.js"
+        src_folder / "dist" / "example1.4725d39478f0b1676dc24f7b1bbee0ae.js"
     ).exists(), result.output
 
 
@@ -167,7 +167,7 @@ def test_full(src_folder: Path):
     text = (src_folder / "dist" / "example2.txt").read_text("utf8")
     # print(text)
     assert "example1.120bc14042c23711b51a07133e9dcabd.css" in text, text
-    assert "example1.36fb66cd32ac08ace70a7132f8173a9b.js" in text, text
+    assert "example1.4725d39478f0b1676dc24f7b1bbee0ae.js" in text, text
     assert len(list((src_folder / "dist").glob("*"))) == 7
 
     # re-run
