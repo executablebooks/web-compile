@@ -1,8 +1,9 @@
--   id: scss-compile
-    name: Compile SCSS
-    description: This hook compiles SCSS to CSS.
-    entry: scss-compile
+-   id: web-compile
+    name: Compile Web Assets
+    description: This hook compiles SCSS to CSS and minifies JS.
+    entry: web-compile
     language: python
     language_version: python3
     require_serial: true
-    types: [scss]
+    # types: [css, javascript, jinja2, json, scss, toml, yaml]
+    types: [text]

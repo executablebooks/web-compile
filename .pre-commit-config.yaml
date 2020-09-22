@@ -21,8 +21,12 @@ repos:
   hooks:
   - id: flake8
 
-- repo: https://github.com/executablebooks/scss-compile
-  rev: v0.1.1
-  hooks:
-    - id: scss-compile
-      args: [--config=scss-compile-config.yml]
+# - repo: https://github.com/executablebooks/web-compile
+#   rev: v0.2.0
+#   hooks:
+#     - id: web-compile
+#       files: >-
+#           (?x)^(
+#               tests/example_src/.*|
+#               tests/example_dist/.*
+#           )$

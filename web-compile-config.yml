@@ -1,0 +1,25 @@
+web-compile:
+  sass:
+    files:
+      tests/example_src/example1.scss: tests/example_dist/example1.[hash].css
+      tests/example_src/example2.scss: tests/example_dist/example2.[hash].css
+    precision: 5
+    sourcemap: true
+    format: compressed
+    encoding: utf8
+  js:
+    files:
+      tests/example_src/example1.js: tests/example_dist/example1.[hash].js
+    comments: false
+    encoding: utf8
+  jinja:
+    files:
+      tests/example_src/example1.j2: tests/example_dist/example1.txt
+      tests/example_src/example3.j2: tests/example_dist/example3.txt
+    variables:
+      a: b
+  exit_code: 2
+  verbose: false
+  test_run: false
+  continue_on_error: true
+  quiet: false
