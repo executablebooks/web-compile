@@ -424,7 +424,14 @@ def compile_jinja(
             raise KeyError(f"No compiled path: {path}")
         return file_map.get(Path(path)).name
 
+    def _get_hash(path):
+        if not path or Path(path) not in file_map:
+            raise KeyError(f"No compiled path: {path}")
+        input_path = root / Path(path)
+        return hash_file(input_path.read_text("utf8"))
+
     jinja_env.filters["compiled_name"] = _get_compiled_name
+    jinja_env.filters["hash"] = _get_hash
     for input_str, output_str in (jinja_files or {}).items():
         input_path = root / input_str
         output_path = root / output_str
