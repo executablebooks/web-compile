@@ -127,6 +127,28 @@ def test_jinja_basic(src_folder: Path):
     assert (src_folder / "dist" / "example1.txt").exists(), result.output
     assert "b" in (src_folder / "dist" / "example1.txt").read_text("utf8")
 
+def test_jinja_hash(src_folder: Path):
+    config = create_config(
+        src_folder,
+        {
+            "sass": {
+                "files": {
+                    "src/example1.scss": "dist/example1.css",
+                },
+                "precision": 5,
+                "sourcemap": True,
+                "format": "compressed",
+                "encoding": "utf8",
+            },
+            "jinja": {
+                "files": {"src/example4.j2": "dist/example4.txt"},
+            }
+        },
+    )
+    result = CliRunner().invoke(run_compile, ["-c", str(config)])
+    assert result.exit_code == 3, result.output
+    assert (src_folder / "dist" / "example4.txt").exists(), result.output
+    assert "example1.css?digest=" in (src_folder / "dist" / "example4.txt").read_text("utf8")
 
 def test_full(src_folder: Path):
     config = create_config(
