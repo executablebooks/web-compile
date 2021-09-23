@@ -279,12 +279,16 @@ dist/
 ### Jinja Templates
 
 Files can be created from Jinja templates.
-These are created after the SCSS and JS files are compiled, and allow for a special `compiled_name` filter,
-which converts ab input file path to the compiled file name:
+These are created after the SCSS and JS files are compiled.
+In addition, they may be combined with two Jinja filters designed for this tool:
+
+- `compiled_name` will convert an input file path to the compiled file name:
+- `hash` will return the hash for a filename that can be inserted wherever you wish.
 
 `src/file.j2`:
 ```jinja
 {{ "src/file.scss" | compiled_name }}
+{{ "src/file.scss" | compiled_name }}?digest={{ "src/file.scss" | hash }}
 {{ var1 }}
 ```
 
@@ -307,6 +311,7 @@ $ web-compile
 `dist/file.txt`:
 ```
 file.beabd761a3703567b4ce06c9a6adde55.css
+file.beabd761a3703567b4ce06c9a6adde55.css?digest=beabd761a3703567b4ce06c9a6adde55
 other
 ```
 
