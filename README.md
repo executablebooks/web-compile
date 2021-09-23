@@ -282,7 +282,7 @@ Files can be created from Jinja templates.
 These are created after the SCSS and JS files are compiled.
 In addition, they may be combined with two Jinja filters designed for this tool:
 
-- `compiled_name` will convert an input file path to the compiled file name:
+- `compiled_name` will convert an input file path to the compiled file name.
 - `hash` will return the hash for a filename that can be inserted wherever you wish.
 
 `src/file.j2`:
