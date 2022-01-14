@@ -23,7 +23,7 @@ setup(
     packages=find_packages(),
     python_requires=">=3.6",
     install_requires=[
-        "click~=7.1.2",
+        "click>=7.1.2,<9.0.0",
         "jinja2~=2.11.2",
         "libsass~=0.20.1",
         "gitpython~=3.1.8",
