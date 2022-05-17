@@ -24,7 +24,7 @@ setup(
     python_requires=">=3.6",
     install_requires=[
         "click~=7.1.2",
-        "jinja2~=2.11.2",
+        "jinja2~=3.0.3",
         "libsass~=0.20.1",
         "gitpython~=3.1.8",
         "pyyaml",
